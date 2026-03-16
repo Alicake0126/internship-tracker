@@ -1,0 +1,15 @@
+credentials.json
+  .env
+  *.db
+  __pycache__/
+  *.py[cod]
+  *$py.class
+  venv/
+  .venv/
+  env/
+  .vscode/
+  .idea/
+  *.swp
+  *.swo
+  .DS_Store
+  Thumbs.db
