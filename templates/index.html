@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+  <html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Internship Tracker</title>
+      <style>
+          * { margin: 0; padding: 0; box-sizing: border-box; }
+          body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background:
+  #f5f7fa; color: #333; line-height: 1.6; }
+          .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+          header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px;
+  border-radius: 12px; margin-bottom: 24px; }
+          header h1 { font-size: 1.8em; margin-bottom: 8px; }
+          header p { opacity: 0.9; }
+          .actions { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
+          .url-input-group { display: flex; flex: 1; min-width: 300px; gap: 8px; }
+          #urlInput { flex: 1; padding: 12px 16px; border: 2px solid #e1e5eb; border-radius: 8px; font-size: 1em; }
+          #urlInput:focus { outline: none; border-color: #667eea; }
+          button { padding: 12px 24px; border: none; border-radius: 8px; font-size: 1em; cursor: pointer;
+  font-weight: 500; }
+          .btn-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+          .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4); }
+          .btn-secondary { background: white; color: #667eea; border: 2px solid #667eea; }
+          .btn-danger { background: #ff6b6b; color: white; padding: 6px 12px; font-size: 0.85em; }
+          .stats { display: flex; gap: 16px; margin-bottom: 20px; flex-wrap: wrap; }
+          .stat-card { background: white; padding: 16px 24px; border-radius: 10px; box-shadow: 0 2px 8px
+  rgba(0,0,0,0.08); }
+          .stat-card .number { font-size: 1.8em; font-weight: 700; color: #667eea; }
+          .stat-card .label { font-size: 0.85em; color: #888; }
+          .table-container { background: white; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  overflow: hidden; }
+          .table-wrapper { overflow-x: auto; }
+          table { width: 100%; border-collapse: collapse; font-size: 0.9em; }
+          th, td { padding: 14px 12px; text-align: left; border-bottom: 1px solid #f0f0f0; }
+          th { background: #f8f9fc; font-weight: 600; color: #555; white-space: nowrap; }
+          tr:hover { background: #fafbff; }
+          .status-select { padding: 6px 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 0.9em; cursor:
+  pointer; }
+          .status-to-apply { background: #fff3cd; color: #856404; }
+          .status-applied { background: #cce5ff; color: #004085; }
+          .status-interviewing { background: #d4edda; color: #155724; }
+          .status-accepted { background: #28a745; color: white; }
+          .status-rejected { background: #f8d7da; color: #721c24; }
+          .status-expired { background: #e2e3e5; color: #383d41; }
+          .editable { padding: 4px 8px; border: 1px solid transparent; border-radius: 4px; cursor: pointer;
+  min-width: 60px; display: inline-block; }
+          .editable:hover { background: #f0f3ff; border-color: #ddd; }
+          .editable:focus { outline: none; border-color: #667eea; background: white; }
+          .url-link { color: #667eea; text-decoration: none; max-width: 150px; display: inline-block; overflow:
+  hidden; text-overflow: ellipsis; white-space: nowrap; }
+          .url-link:hover { text-decoration: underline; }
+          .loading { text-align: center; padding: 40px; color: #888; }
+          .error-msg { background: #fff3f3; color: #d63031; padding: 12px 16px; border-radius: 8px; margin-bottom:
+  16px; display: none; }
+          .success-msg { background: #e8f5e9; color: #2e7d32; padding: 12px 16px; border-radius: 8px; margin-bottom:
+   16px; display: none; }
+          .empty-state { text-align: center; padding: 60px 20px; color: #888; }
+          @media (max-width: 768px) { .actions { flex-direction: column; } .url-input-group { min-width: 100%; } }
+      </style>
+  </head>
+  <body>
+      <div class="container">
+          <header><h1>Internship Tracker</h1><p>Paste a job URL to auto-extract info and track your
+  applications</p></header>
+          <div class="error-msg" id="errorMsg"></div>
+          <div class="success-msg" id="successMsg"></div>
+          <div class="actions">
+              <div class="url-input-group">
+                  <input type="text" id="urlInput" placeholder="Paste job URL (LinkedIn or company career page)">
+                  <button class="btn-primary" onclick="addJob()">Add Job</button>
+              </div>
+              <button class="btn-secondary" onclick="loadJobs()">Refresh</button>
+          </div>
+          <div class="stats">
+              <div class="stat-card"><div class="number" id="totalCount">-</div><div class="label">Total
+  Jobs</div></div>
+              <div class="stat-card"><div class="number" id="pendingCount">-</div><div class="label">To
+  Apply</div></div>
+              <div class="stat-card"><div class="number" id="appliedCount">-</div><div
+  class="label">Applied</div></div>
+              <div class="stat-card"><div class="number" id="interviewCount">-</div><div
+  class="label">Interviewing</div></div>
+          </div>
+          <div class="table-container"><div class="table-wrapper">
+              <table><thead><tr><th>Status</th><th>Company</th><th>Title</th><th>Department</th><th>Location</th><th
+  >Duration</th><th>Link</th><th>Apply
+  Date</th><th>Channel</th><th>Portfolio</th><th>Notes</th><th>Actions</th></tr></thead>
+              <tbody id="jobsTable"><tr><td colspan="12" class="loading">Loading</td></tr></tbody></table>
+          </div></div>
+      </div>
+      <script>
+          const STATUS_OPTIONS = {{ status_options | tojson }};
+          const CHANNEL_OPTIONS = {{ channel_options | tojson }};
+          let jobs = [];
+          document.addEventListener('DOMContentLoaded', () => loadJobs());
+          document.getElementById('urlInput').addEventListener('keypress', (e) => { if (e.key === 'Enter') addJob();
+   });
+
+          async function loadJobs() {
+              document.getElementById('jobsTable').innerHTML = '<tr><td colspan="12"
+  class="loading">Loading</td></tr>';
+              try {
+                  const res = await fetch('/api/jobs');
+                  const data = await res.json();
+                  if (data.success) { jobs = data.jobs; renderTable(); updateStats(); }
+                  else showError(data.error);
+              } catch (err) { showError('Failed to load: ' + err.message); }
+          }
+
+          async function addJob() {
+              const urlInput = document.getElementById('urlInput');
+              const url = urlInput.value.trim();
+              if (!url) { showError('Please enter a job URL'); return; }
+              try {
+                  const res = await fetch('/api/jobs', { method: 'POST', headers: { 'Content-Type':
+  'application/json' }, body: JSON.stringify({ url }) });
+                  const data = await res.json();
+                  if (data.success) { urlInput.value = ''; showSuccess('Job added!'); loadJobs(); }
+                  else showError(data.error);
+              } catch (err) { showError('Failed: ' + err.message); }
+          }
+
+          async function updateStatus(jobId, newStatus) {
+              try {
+                  const res = await fetch(`/api/jobs/${jobId}/status`, { method: 'PATCH', headers: { 'Content-Type':
+   'application/json' }, body: JSON.stringify({ status: newStatus }) });
+                  if (!(await res.json()).success) loadJobs();
+                  else { const job = jobs.find(j => j.id === jobId); if (job) job.Status = newStatus; updateStats();
+   }
+              } catch (err) { showError('Update failed'); }
+          }
+
+          async function updateField(jobId, field, value) {
+              try {
+                  await fetch(`/api/jobs/${jobId}/field`, { method: 'PATCH', headers: { 'Content-Type':
+  'application/json' }, body: JSON.stringify({ field, value }) });
+              } catch (err) { showError('Update failed'); }
+          }
+
+          async function deleteJob(jobId) {
+              if (!confirm('Delete this job?')) return;
+              try {
+                  const res = await fetch(`/api/jobs/${jobId}`, { method: 'DELETE' });
+                  if ((await res.json()).success) { showSuccess('Deleted'); loadJobs(); }
+              } catch (err) { showError('Delete failed'); }
+          }
+
+          function getStatusClass(status) {
+              return { 'To Apply': 'status-to-apply', 'Applied': 'status-applied', 'Interviewing':
+  'status-interviewing', 'Accepted': 'status-accepted', 'Rejected': 'status-rejected', 'Expired': 'status-expired'
+  }[status] || '';
+          }
+
+          function renderTable() {
+              const tbody = document.getElementById('jobsTable');
+              if (jobs.length === 0) { tbody.innerHTML = '<tr><td colspan="12"><div class="empty-state"><h3>No jobs
+  yet</h3><p>Paste a job URL above to start tracking</p></div></td></tr>'; return; }
+              tbody.innerHTML = jobs.map(job => `<tr>
+                  <td><select class="status-select ${getStatusClass(job.Status)}" onchange="updateStatus(${job.id},
+  this.value)">${STATUS_OPTIONS.map(s => `<option value="${s}" ${job.Status === s ? 'selected' :
+  ''}>${s}</option>`).join('')}</select></td>
+                  <td><span class="editable" contenteditable onblur="updateField(${job.id}, 'company',
+  this.textContent)">${job.Company || '-'}</span></td>
+                  <td><span class="editable" contenteditable onblur="updateField(${job.id}, 'title',
+  this.textContent)">${job.Title || '-'}</span></td>
+                  <td><span class="editable" contenteditable onblur="updateField(${job.id}, 'department',
+  this.textContent)">${job.Department || '-'}</span></td>
+                  <td><span class="editable" contenteditable onblur="updateField(${job.id}, 'location',
+  this.textContent)">${job.Location || '-'}</span></td>
+                  <td><span class="editable" contenteditable onblur="updateField(${job.id}, 'duration',
+  this.textContent)">${job.Duration || '-'}</span></td>
+                  <td><a href="${job.URL}" target="_blank" class="url-link">${new
+  URL(job.URL).hostname.replace('www.','')}</a></td>
+                  <td><input type="date" value="${job['Apply Date'] || ''}" onchange="updateField(${job.id},
+  'apply_date', this.value)" style="border:1px solid #ddd;padding:4px;border-radius:4px;"></td>
+                  <td><select onchange="updateField(${job.id}, 'channel', this.value)" style="padding:4px;border:1px
+   solid #ddd;border-radius:4px;"><option value="">-</option>${CHANNEL_OPTIONS.map(c => `<option value="${c}"
+  ${job.Channel === c ? 'selected' : ''}>${c}</option>`).join('')}</select></td>
+                  <td style="text-align:center;"><input type="checkbox" ${job.Portfolio === 'Yes' ? 'checked' : ''}
+  onchange="updateField(${job.id}, 'portfolio', this.checked ? 'Yes' : 'No')"></td>
+                  <td><span class="editable" contenteditable onblur="updateField(${job.id}, 'notes',
+  this.textContent)">${job.Notes || ''}</span></td>
+                  <td><button class="btn-danger" onclick="deleteJob(${job.id})">Delete</button></td>
+              </tr>`).join('');
+          }
+
+          function updateStats() {
+              document.getElementById('totalCount').textContent = jobs.length;
+              document.getElementById('pendingCount').textContent = jobs.filter(j => j.Status === 'To
+  Apply').length;
+              document.getElementById('appliedCount').textContent = jobs.filter(j => j.Status === 'Applied').length;
+              document.getElementById('interviewCount').textContent = jobs.filter(j => j.Status ===
+  'Interviewing').length;
+          }
+
+          function showError(msg) { const el = document.getElementById('errorMsg'); el.textContent = msg;
+  el.style.display = 'block'; setTimeout(() => el.style.display = 'none', 5000); }
+          function showSuccess(msg) { const el = document.getElementById('successMsg'); el.textContent = msg;
+  el.style.display = 'block'; setTimeout(() => el.style.display = 'none', 3000); }
+      </script>
+  </body>
+  </html>
