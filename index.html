@@ -4,7 +4,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Internship Tracker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --bg: #f5f2ed;
+            --surface: #faf8f5;
+            --ink: #1a1714;
+            --ink-light: #5c5650;
+            --accent: #8b6f47;
+            --accent-light: #d4b896;
+            --accent-pale: #ede5d8;
+            --border: #d9d3c8;
+            --green: #4a7c5c;
+            --green-pale: #e8f0eb;
+            --blue: #3a5f8a;
+            --blue-pale: #e5eef5;
+            --red: #c0392b;
+            --red-pale: #fbeae8;
+            --yellow: #b8860b;
+            --yellow-pale: #fdf6e3;
+            --gray: #6b6b6b;
+            --gray-pale: #f0f0f0;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -12,40 +34,43 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #f5f7fa;
-            color: #333;
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            background: var(--bg);
+            color: var(--ink);
             line-height: 1.6;
+            font-size: 1.05rem;
         }
 
         .container {
             max-width: 1400px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 24px;
         }
 
         header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 30px;
-            border-radius: 12px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 2px;
+            padding: 32px;
             margin-bottom: 24px;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
         }
 
         header h1 {
-            font-size: 1.8em;
-            margin-bottom: 8px;
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 2rem;
+            font-weight: 500;
+            margin-bottom: 6px;
+            letter-spacing: 0.02em;
         }
 
         header p {
-            opacity: 0.9;
-            font-size: 0.95em;
+            color: var(--ink-light);
+            font-size: 1rem;
         }
 
         .actions {
             display: flex;
-            gap: 12px;
+            gap: 10px;
             margin-bottom: 20px;
             flex-wrap: wrap;
         }
@@ -59,89 +84,103 @@
 
         #urlInput {
             flex: 1;
-            padding: 12px 16px;
-            border: 2px solid #e1e5eb;
-            border-radius: 8px;
-            font-size: 1em;
+            padding: 10px 14px;
+            border: 1px solid var(--border);
+            border-radius: 2px;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.85rem;
+            background: var(--surface);
+            color: var(--ink);
             transition: border-color 0.2s;
         }
 
         #urlInput:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: var(--accent);
+        }
+
+        #urlInput::placeholder {
+            color: var(--ink-light);
         }
 
         button {
-            padding: 12px 24px;
+            padding: 10px 20px;
             border: none;
-            border-radius: 8px;
-            font-size: 1em;
+            border-radius: 2px;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.8rem;
             cursor: pointer;
             transition: all 0.2s;
-            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+            background: var(--ink);
+            color: var(--surface);
         }
 
         .btn-primary:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+            background: var(--accent);
         }
 
         .btn-secondary {
-            background: white;
-            color: #667eea;
-            border: 2px solid #667eea;
+            background: var(--surface);
+            color: var(--ink);
+            border: 1px solid var(--border);
         }
 
         .btn-secondary:hover {
-            background: #f0f3ff;
+            border-color: var(--accent);
+            color: var(--accent);
         }
 
         .btn-danger {
-            background: #ff6b6b;
-            color: white;
+            background: var(--red-pale);
+            color: var(--red);
             padding: 6px 12px;
-            font-size: 0.85em;
+            font-size: 0.75rem;
         }
 
         .btn-danger:hover {
-            background: #ee5a5a;
+            background: var(--red);
+            color: white;
         }
 
         .stats {
             display: flex;
-            gap: 16px;
+            gap: 12px;
             margin-bottom: 20px;
             flex-wrap: wrap;
         }
 
         .stat-card {
-            background: white;
+            background: var(--surface);
             padding: 16px 24px;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border-radius: 2px;
+            border: 1px solid var(--border);
             min-width: 120px;
         }
 
         .stat-card .number {
-            font-size: 1.8em;
-            font-weight: 700;
-            color: #667eea;
+            font-family: 'DM Mono', monospace;
+            font-size: 1.6rem;
+            font-weight: 500;
+            color: var(--accent);
         }
 
         .stat-card .label {
-            font-size: 0.85em;
-            color: #888;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--ink-light);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
         }
 
         .table-container {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            background: var(--surface);
+            border-radius: 2px;
+            border: 1px solid var(--border);
             overflow: hidden;
         }
 
@@ -152,68 +191,77 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 0.9em;
+            font-size: 0.95rem;
         }
 
         th, td {
             padding: 14px 12px;
             text-align: left;
-            border-bottom: 1px solid #f0f0f0;
+            border-bottom: 1px solid var(--border);
         }
 
         th {
-            background: #f8f9fc;
-            font-weight: 600;
-            color: #555;
+            background: var(--accent-pale);
+            font-family: 'DM Mono', monospace;
+            font-weight: 500;
+            font-size: 0.7rem;
+            color: var(--ink-light);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
             position: sticky;
             top: 0;
             white-space: nowrap;
         }
 
         tr:hover {
-            background: #fafbff;
+            background: var(--accent-pale);
         }
 
         .status-select {
             padding: 6px 10px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            font-size: 0.9em;
+            border: 1px solid var(--border);
+            border-radius: 2px;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.75rem;
             cursor: pointer;
             min-width: 100px;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
         }
 
-        .status-to-apply { background: #fff3cd; color: #856404; }
-        .status-applied { background: #cce5ff; color: #004085; }
-        .status-interviewing { background: #d4edda; color: #155724; }
-        .status-accepted { background: #28a745; color: white; }
-        .status-rejected { background: #f8d7da; color: #721c24; }
-        .status-expired { background: #e2e3e5; color: #383d41; }
+        .status-to-apply { background: var(--yellow-pale); color: var(--yellow); border-color: var(--yellow); }
+        .status-applied { background: var(--blue-pale); color: var(--blue); border-color: var(--blue); }
+        .status-interviewing { background: var(--green-pale); color: var(--green); border-color: var(--green); }
+        .status-accepted { background: var(--green); color: white; border-color: var(--green); }
+        .status-rejected { background: var(--red-pale); color: var(--red); border-color: var(--red); }
+        .status-expired { background: var(--gray-pale); color: var(--gray); border-color: var(--gray); }
 
         .editable {
             padding: 4px 8px;
             border: 1px solid transparent;
-            border-radius: 4px;
+            border-radius: 2px;
             cursor: pointer;
             min-width: 60px;
             display: inline-block;
         }
 
         .editable:hover {
-            background: #f0f3ff;
-            border-color: #ddd;
+            background: var(--accent-pale);
+            border-color: var(--border);
         }
 
         .editable:focus {
             outline: none;
-            border-color: #667eea;
-            background: white;
+            border-color: var(--accent);
+            background: var(--surface);
         }
 
         .url-link {
-            color: #667eea;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--accent);
             text-decoration: none;
-            max-width: 200px;
+            max-width: 180px;
             display: inline-block;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -222,41 +270,56 @@
 
         .url-link:hover {
             text-decoration: underline;
+            color: var(--ink);
         }
 
         .portfolio-checkbox {
-            width: 18px;
-            height: 18px;
+            width: 16px;
+            height: 16px;
             cursor: pointer;
+            accent-color: var(--accent);
         }
 
         .error-msg {
-            background: #fff3f3;
-            color: #d63031;
+            background: var(--red-pale);
+            color: var(--red);
             padding: 12px 16px;
-            border-radius: 8px;
+            border-radius: 2px;
+            border: 1px solid var(--red);
             margin-bottom: 16px;
             display: none;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.85rem;
         }
 
         .success-msg {
-            background: #e8f5e9;
-            color: #2e7d32;
+            background: var(--green-pale);
+            color: var(--green);
             padding: 12px 16px;
-            border-radius: 8px;
+            border-radius: 2px;
+            border: 1px solid var(--green);
             margin-bottom: 16px;
             display: none;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.85rem;
         }
 
         .empty-state {
             text-align: center;
             padding: 60px 20px;
-            color: #888;
+            color: var(--ink-light);
         }
 
         .empty-state h3 {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 1.4rem;
+            font-weight: 500;
             margin-bottom: 8px;
-            color: #666;
+            color: var(--ink);
+        }
+
+        .empty-state p {
+            font-size: 0.95rem;
         }
 
         /* Modal */
@@ -267,7 +330,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.5);
+            background: rgba(26, 23, 20, 0.6);
             z-index: 1000;
             align-items: center;
             justify-content: center;
@@ -278,63 +341,96 @@
         }
 
         .modal-content {
-            background: white;
-            padding: 30px;
-            border-radius: 12px;
+            background: var(--surface);
+            padding: 32px;
+            border-radius: 2px;
+            border: 1px solid var(--border);
             width: 90%;
-            max-width: 500px;
+            max-width: 480px;
             max-height: 90vh;
             overflow-y: auto;
         }
 
         .modal-content h2 {
-            margin-bottom: 20px;
-            color: #333;
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 1.5rem;
+            font-weight: 500;
+            margin-bottom: 24px;
+            color: var(--ink);
         }
 
         .form-group {
-            margin-bottom: 16px;
+            margin-bottom: 18px;
         }
 
         .form-group label {
             display: block;
             margin-bottom: 6px;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.7rem;
             font-weight: 500;
-            color: #555;
+            color: var(--ink-light);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
         }
 
         .form-group input,
         .form-group select {
             width: 100%;
             padding: 10px 12px;
-            border: 2px solid #e1e5eb;
-            border-radius: 8px;
-            font-size: 1em;
+            border: 1px solid var(--border);
+            border-radius: 2px;
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 1rem;
+            background: var(--surface);
+            color: var(--ink);
         }
 
         .form-group input:focus,
         .form-group select:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: var(--accent);
         }
 
         .modal-actions {
             display: flex;
             gap: 12px;
-            margin-top: 24px;
+            margin-top: 28px;
         }
 
         .modal-actions button {
             flex: 1;
         }
 
+        /* Inline inputs */
+        td input[type="date"],
+        td select {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.8rem;
+            padding: 5px 8px;
+            border: 1px solid var(--border);
+            border-radius: 2px;
+            background: var(--surface);
+            color: var(--ink);
+        }
+
+        td input[type="date"]:focus,
+        td select:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
         @media (max-width: 768px) {
             .container {
-                padding: 12px;
+                padding: 16px;
             }
 
             header {
-                padding: 20px;
+                padding: 24px;
+            }
+
+            header h1 {
+                font-size: 1.6rem;
             }
 
             .actions {
@@ -344,6 +440,15 @@
             .url-input-group {
                 min-width: 100%;
             }
+
+            .stats {
+                gap: 8px;
+            }
+
+            .stat-card {
+                padding: 12px 16px;
+                min-width: 100px;
+            }
         }
     </style>
 </head>
@@ -351,7 +456,7 @@
     <div class="container">
         <header>
             <h1>Internship Tracker</h1>
-            <p>Track your internship applications - data saved locally in your browser</p>
+            <p>Track your internship applications — data saved locally in your browser</p>
         </header>
 
         <div class="error-msg" id="errorMsg"></div>
@@ -371,7 +476,7 @@
         <div class="stats" id="stats">
             <div class="stat-card">
                 <div class="number" id="totalCount">0</div>
-                <div class="label">Total Jobs</div>
+                <div class="label">Total</div>
             </div>
             <div class="stat-card">
                 <div class="number" id="pendingCount">0</div>
@@ -566,12 +671,10 @@
                     company = parts[0] || 'Unknown';
                 } else {
                     channel = 'Company Website';
-                    // Extract company from domain
                     const parts = domain.replace('www.', '').replace('careers.', '').replace('jobs.', '').split('.');
                     company = parts[0] || 'Unknown';
                 }
 
-                // Capitalize first letter
                 company = company.charAt(0).toUpperCase() + company.slice(1);
 
             } catch (e) {
@@ -669,13 +772,11 @@
             };
 
             if (editId) {
-                // Update existing
                 const idx = jobs.findIndex(j => j.id === editId);
                 if (idx !== -1) {
                     jobs[idx] = { ...jobs[idx], ...jobData };
                 }
             } else {
-                // Add new
                 const newJob = {
                     id: generateId(),
                     ...jobData,
@@ -793,12 +894,10 @@
                     </td>
                     <td>
                         <input type="date" value="${job.applyDate || ''}"
-                               onchange="updateField('${job.id}', 'applyDate', this.value)"
-                               style="border: 1px solid #ddd; padding: 4px; border-radius: 4px;">
+                               onchange="updateField('${job.id}', 'applyDate', this.value)">
                     </td>
                     <td>
-                        <select onchange="updateField('${job.id}', 'channel', this.value)"
-                                style="padding: 4px; border: 1px solid #ddd; border-radius: 4px;">
+                        <select onchange="updateField('${job.id}', 'channel', this.value)">
                             <option value="">-</option>
                             ${CHANNEL_OPTIONS.map(c =>
                                 `<option value="${c}" ${job.channel === c ? 'selected' : ''}>${c}</option>`
@@ -864,7 +963,6 @@
                     const imported = JSON.parse(e.target.result);
                     if (Array.isArray(imported)) {
                         if (confirm(`Import ${imported.length} jobs? This will add to your existing data.`)) {
-                            // Add imported jobs, avoiding duplicates by URL
                             let added = 0;
                             imported.forEach(job => {
                                 if (!job.id) job.id = generateId();
