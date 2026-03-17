@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Internship Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        header h1 {
+            font-size: 1.8em;
+            margin-bottom: 8px;
+        }
+
+        header p {
+            opacity: 0.9;
+            font-size: 0.95em;
+        }
+
+        .actions {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .url-input-group {
+            display: flex;
+            flex: 1;
+            min-width: 300px;
+            gap: 8px;
+        }
+
+        #urlInput {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid #e1e5eb;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.2s;
+        }
+
+        #urlInput:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .btn-secondary:hover {
+            background: #f0f3ff;
+        }
+
+        .btn-danger {
+            background: #ff6b6b;
+            color: white;
+            padding: 6px 12px;
+            font-size: 0.85em;
+        }
+
+        .btn-danger:hover {
+            background: #ee5a5a;
+        }
+
+        .stats {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 16px 24px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            min-width: 120px;
+        }
+
+        .stat-card .number {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .stat-card .label {
+            font-size: 0.85em;
+            color: #888;
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9em;
+        }
+
+        th, td {
+            padding: 14px 12px;
+            text-align: left;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        th {
+            background: #f8f9fc;
+            font-weight: 600;
+            color: #555;
+            position: sticky;
+            top: 0;
+            white-space: nowrap;
+        }
+
+        tr:hover {
+            background: #fafbff;
+        }
+
+        .status-select {
+            padding: 6px 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 0.9em;
+            cursor: pointer;
+            min-width: 100px;
+        }
+
+        .status-to-apply { background: #fff3cd; color: #856404; }
+        .status-applied { background: #cce5ff; color: #004085; }
+        .status-interviewing { background: #d4edda; color: #155724; }
+        .status-accepted { background: #28a745; color: white; }
+        .status-rejected { background: #f8d7da; color: #721c24; }
+        .status-expired { background: #e2e3e5; color: #383d41; }
+
+        .editable {
+            padding: 4px 8px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+            cursor: pointer;
+            min-width: 60px;
+            display: inline-block;
+        }
+
+        .editable:hover {
+            background: #f0f3ff;
+            border-color: #ddd;
+        }
+
+        .editable:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+        }
+
+        .url-link {
+            color: #667eea;
+            text-decoration: none;
+            max-width: 200px;
+            display: inline-block;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .url-link:hover {
+            text-decoration: underline;
+        }
+
+        .portfolio-checkbox {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .error-msg {
+            background: #fff3f3;
+            color: #d63031;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            display: none;
+        }
+
+        .success-msg {
+            background: #e8f5e9;
+            color: #2e7d32;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            display: none;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #888;
+        }
+
+        .empty-state h3 {
+            margin-bottom: 8px;
+            color: #666;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-content h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            color: #555;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid #e1e5eb;
+            border-radius: 8px;
+            font-size: 1em;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .modal-actions button {
+            flex: 1;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 12px;
+            }
+
+            header {
+                padding: 20px;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+
+            .url-input-group {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Internship Tracker</h1>
+            <p>Track your internship applications - data saved locally in your browser</p>
+        </header>
+
+        <div class="error-msg" id="errorMsg"></div>
+        <div class="success-msg" id="successMsg"></div>
+
+        <div class="actions">
+            <div class="url-input-group">
+                <input type="text" id="urlInput" placeholder="Paste job URL or click 'Add Manually'">
+                <button class="btn-primary" onclick="addJobFromUrl()">Add Job</button>
+            </div>
+            <button class="btn-secondary" onclick="openAddModal()">+ Add Manually</button>
+            <button class="btn-secondary" onclick="exportData()">Export</button>
+            <button class="btn-secondary" onclick="document.getElementById('importFile').click()">Import</button>
+            <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
+        </div>
+
+        <div class="stats" id="stats">
+            <div class="stat-card">
+                <div class="number" id="totalCount">0</div>
+                <div class="label">Total Jobs</div>
+            </div>
+            <div class="stat-card">
+                <div class="number" id="pendingCount">0</div>
+                <div class="label">To Apply</div>
+            </div>
+            <div class="stat-card">
+                <div class="number" id="appliedCount">0</div>
+                <div class="label">Applied</div>
+            </div>
+            <div class="stat-card">
+                <div class="number" id="interviewCount">0</div>
+                <div class="label">Interviewing</div>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Status</th>
+                            <th>Company</th>
+                            <th>Title</th>
+                            <th>Department</th>
+                            <th>Location</th>
+                            <th>Duration</th>
+                            <th>Link</th>
+                            <th>Apply Date</th>
+                            <th>Channel</th>
+                            <th>Portfolio</th>
+                            <th>Notes</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="jobsTable">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Modal -->
+    <div class="modal" id="addModal">
+        <div class="modal-content">
+            <h2 id="modalTitle">Add Job</h2>
+            <input type="hidden" id="editJobId">
+
+            <div class="form-group">
+                <label>Company *</label>
+                <input type="text" id="formCompany" required>
+            </div>
+
+            <div class="form-group">
+                <label>Job Title *</label>
+                <input type="text" id="formTitle" required>
+            </div>
+
+            <div class="form-group">
+                <label>Department</label>
+                <input type="text" id="formDepartment">
+            </div>
+
+            <div class="form-group">
+                <label>Location</label>
+                <input type="text" id="formLocation">
+            </div>
+
+            <div class="form-group">
+                <label>Duration</label>
+                <input type="text" id="formDuration" placeholder="e.g., 6 months">
+            </div>
+
+            <div class="form-group">
+                <label>Job URL</label>
+                <input type="url" id="formUrl">
+            </div>
+
+            <div class="form-group">
+                <label>Status</label>
+                <select id="formStatus">
+                    <option value="To Apply">To Apply</option>
+                    <option value="Applied">Applied</option>
+                    <option value="Interviewing">Interviewing</option>
+                    <option value="Accepted">Accepted</option>
+                    <option value="Rejected">Rejected</option>
+                    <option value="Expired">Expired</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Channel</label>
+                <select id="formChannel">
+                    <option value="">-</option>
+                    <option value="Company Website">Company Website</option>
+                    <option value="LinkedIn Easy Apply">LinkedIn Easy Apply</option>
+                    <option value="LinkedIn">LinkedIn</option>
+                    <option value="Email">Email</option>
+                    <option value="Referral">Referral</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Notes</label>
+                <input type="text" id="formNotes">
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn-secondary" onclick="closeModal()">Cancel</button>
+                <button class="btn-primary" onclick="saveJob()">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const STATUS_OPTIONS = ['To Apply', 'Applied', 'Interviewing', 'Accepted', 'Rejected', 'Expired'];
+        const CHANNEL_OPTIONS = ['Company Website', 'LinkedIn Easy Apply', 'LinkedIn', 'Email', 'Referral', 'Other'];
+        const STORAGE_KEY = 'internship_tracker_jobs';
+
+        let jobs = [];
+
+        // Load on start
+        document.addEventListener('DOMContentLoaded', () => {
+            loadJobs();
+            renderTable();
+            updateStats();
+        });
+
+        // Enter key to submit
+        document.getElementById('urlInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') addJobFromUrl();
+        });
+
+        // Close modal on outside click
+        document.getElementById('addModal').addEventListener('click', (e) => {
+            if (e.target.id === 'addModal') closeModal();
+        });
+
+        // Load jobs from localStorage
+        function loadJobs() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            jobs = saved ? JSON.parse(saved) : [];
+        }
+
+        // Save jobs to localStorage
+        function saveJobs() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(jobs));
+        }
+
+        // Generate unique ID
+        function generateId() {
+            return Date.now() + Math.random().toString(36).substr(2, 9);
+        }
+
+        // Add job from URL (simple extraction)
+        function addJobFromUrl() {
+            const urlInput = document.getElementById('urlInput');
+            const url = urlInput.value.trim();
+
+            if (!url) {
+                showError('Please enter a job URL or use "Add Manually"');
+                return;
+            }
+
+            // Check if URL already exists
+            if (jobs.some(j => j.url === url)) {
+                showError('This job URL already exists');
+                return;
+            }
+
+            // Extract basic info from URL
+            let company = '';
+            let channel = '';
+
+            try {
+                const parsed = new URL(url);
+                const domain = parsed.hostname.toLowerCase();
+
+                // Try to extract company name from domain
+                if (domain.includes('linkedin.com')) {
+                    channel = 'LinkedIn';
+                    company = 'Unknown (edit me)';
+                } else if (domain.includes('greenhouse.io')) {
+                    channel = 'Company Website';
+                    company = domain.split('.greenhouse.io')[0].replace('boards.', '');
+                } else if (domain.includes('lever.co')) {
+                    channel = 'Company Website';
+                    company = domain.split('.lever.co')[0].replace('jobs.', '');
+                } else if (domain.includes('workday')) {
+                    channel = 'Company Website';
+                    const parts = domain.split('.');
+                    company = parts[0] || 'Unknown';
+                } else {
+                    channel = 'Company Website';
+                    // Extract company from domain
+                    const parts = domain.replace('www.', '').replace('careers.', '').replace('jobs.', '').split('.');
+                    company = parts[0] || 'Unknown';
+                }
+
+                // Capitalize first letter
+                company = company.charAt(0).toUpperCase() + company.slice(1);
+
+            } catch (e) {
+                showError('Invalid URL');
+                return;
+            }
+
+            const newJob = {
+                id: generateId(),
+                status: 'To Apply',
+                company: company,
+                title: '(Edit title)',
+                department: '',
+                location: '',
+                duration: '',
+                url: url,
+                applyDate: '',
+                channel: channel,
+                portfolio: false,
+                notes: '',
+                createdAt: new Date().toISOString()
+            };
+
+            jobs.unshift(newJob);
+            saveJobs();
+            renderTable();
+            updateStats();
+
+            urlInput.value = '';
+            showSuccess('Job added! Click on fields to edit.');
+        }
+
+        // Open add modal
+        function openAddModal() {
+            document.getElementById('modalTitle').textContent = 'Add Job';
+            document.getElementById('editJobId').value = '';
+            document.getElementById('formCompany').value = '';
+            document.getElementById('formTitle').value = '';
+            document.getElementById('formDepartment').value = '';
+            document.getElementById('formLocation').value = '';
+            document.getElementById('formDuration').value = '';
+            document.getElementById('formUrl').value = '';
+            document.getElementById('formStatus').value = 'To Apply';
+            document.getElementById('formChannel').value = '';
+            document.getElementById('formNotes').value = '';
+            document.getElementById('addModal').classList.add('active');
+        }
+
+        // Open edit modal
+        function openEditModal(jobId) {
+            const job = jobs.find(j => j.id === jobId);
+            if (!job) return;
+
+            document.getElementById('modalTitle').textContent = 'Edit Job';
+            document.getElementById('editJobId').value = jobId;
+            document.getElementById('formCompany').value = job.company || '';
+            document.getElementById('formTitle').value = job.title || '';
+            document.getElementById('formDepartment').value = job.department || '';
+            document.getElementById('formLocation').value = job.location || '';
+            document.getElementById('formDuration').value = job.duration || '';
+            document.getElementById('formUrl').value = job.url || '';
+            document.getElementById('formStatus').value = job.status || 'To Apply';
+            document.getElementById('formChannel').value = job.channel || '';
+            document.getElementById('formNotes').value = job.notes || '';
+            document.getElementById('addModal').classList.add('active');
+        }
+
+        // Close modal
+        function closeModal() {
+            document.getElementById('addModal').classList.remove('active');
+        }
+
+        // Save job from modal
+        function saveJob() {
+            const company = document.getElementById('formCompany').value.trim();
+            const title = document.getElementById('formTitle').value.trim();
+
+            if (!company || !title) {
+                showError('Company and Title are required');
+                return;
+            }
+
+            const editId = document.getElementById('editJobId').value;
+
+            const jobData = {
+                status: document.getElementById('formStatus').value,
+                company: company,
+                title: title,
+                department: document.getElementById('formDepartment').value.trim(),
+                location: document.getElementById('formLocation').value.trim(),
+                duration: document.getElementById('formDuration').value.trim(),
+                url: document.getElementById('formUrl').value.trim(),
+                channel: document.getElementById('formChannel').value,
+                notes: document.getElementById('formNotes').value.trim()
+            };
+
+            if (editId) {
+                // Update existing
+                const idx = jobs.findIndex(j => j.id === editId);
+                if (idx !== -1) {
+                    jobs[idx] = { ...jobs[idx], ...jobData };
+                }
+            } else {
+                // Add new
+                const newJob = {
+                    id: generateId(),
+                    ...jobData,
+                    applyDate: '',
+                    portfolio: false,
+                    createdAt: new Date().toISOString()
+                };
+                jobs.unshift(newJob);
+            }
+
+            saveJobs();
+            renderTable();
+            updateStats();
+            closeModal();
+            showSuccess(editId ? 'Job updated!' : 'Job added!');
+        }
+
+        // Update status
+        function updateStatus(jobId, newStatus) {
+            const job = jobs.find(j => j.id === jobId);
+            if (job) {
+                job.status = newStatus;
+                saveJobs();
+                updateStats();
+            }
+        }
+
+        // Update field inline
+        function updateField(jobId, field, value) {
+            const job = jobs.find(j => j.id === jobId);
+            if (job) {
+                job[field] = value;
+                saveJobs();
+            }
+        }
+
+        // Delete job
+        function deleteJob(jobId) {
+            if (!confirm('Delete this job?')) return;
+            jobs = jobs.filter(j => j.id !== jobId);
+            saveJobs();
+            renderTable();
+            updateStats();
+            showSuccess('Deleted');
+        }
+
+        // Get status class
+        function getStatusClass(status) {
+            const classMap = {
+                'To Apply': 'status-to-apply',
+                'Applied': 'status-applied',
+                'Interviewing': 'status-interviewing',
+                'Accepted': 'status-accepted',
+                'Rejected': 'status-rejected',
+                'Expired': 'status-expired'
+            };
+            return classMap[status] || '';
+        }
+
+        // Render table
+        function renderTable() {
+            const tbody = document.getElementById('jobsTable');
+
+            if (jobs.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="12">
+                            <div class="empty-state">
+                                <h3>No jobs yet</h3>
+                                <p>Paste a job URL or click "Add Manually" to start tracking</p>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = jobs.map(job => `
+                <tr>
+                    <td>
+                        <select class="status-select ${getStatusClass(job.status)}"
+                                onchange="updateStatus('${job.id}', this.value)">
+                            ${STATUS_OPTIONS.map(s =>
+                                `<option value="${s}" ${job.status === s ? 'selected' : ''}>${s}</option>`
+                            ).join('')}
+                        </select>
+                    </td>
+                    <td>
+                        <span class="editable" contenteditable
+                              onblur="updateField('${job.id}', 'company', this.textContent)"
+                        >${job.company || '-'}</span>
+                    </td>
+                    <td>
+                        <span class="editable" contenteditable
+                              onblur="updateField('${job.id}', 'title', this.textContent)"
+                        >${job.title || '-'}</span>
+                    </td>
+                    <td>
+                        <span class="editable" contenteditable
+                              onblur="updateField('${job.id}', 'department', this.textContent)"
+                        >${job.department || '-'}</span>
+                    </td>
+                    <td>
+                        <span class="editable" contenteditable
+                              onblur="updateField('${job.id}', 'location', this.textContent)"
+                        >${job.location || '-'}</span>
+                    </td>
+                    <td>
+                        <span class="editable" contenteditable
+                              onblur="updateField('${job.id}', 'duration', this.textContent)"
+                        >${job.duration || '-'}</span>
+                    </td>
+                    <td>
+                        ${job.url ? `<a href="${job.url}" target="_blank" class="url-link" title="${job.url}">${shortenUrl(job.url)}</a>` : '-'}
+                    </td>
+                    <td>
+                        <input type="date" value="${job.applyDate || ''}"
+                               onchange="updateField('${job.id}', 'applyDate', this.value)"
+                               style="border: 1px solid #ddd; padding: 4px; border-radius: 4px;">
+                    </td>
+                    <td>
+                        <select onchange="updateField('${job.id}', 'channel', this.value)"
+                                style="padding: 4px; border: 1px solid #ddd; border-radius: 4px;">
+                            <option value="">-</option>
+                            ${CHANNEL_OPTIONS.map(c =>
+                                `<option value="${c}" ${job.channel === c ? 'selected' : ''}>${c}</option>`
+                            ).join('')}
+                        </select>
+                    </td>
+                    <td style="text-align: center;">
+                        <input type="checkbox" class="portfolio-checkbox"
+                               ${job.portfolio ? 'checked' : ''}
+                               onchange="updateField('${job.id}', 'portfolio', this.checked)">
+                    </td>
+                    <td>
+                        <span class="editable" contenteditable
+                              onblur="updateField('${job.id}', 'notes', this.textContent)"
+                        >${job.notes || ''}</span>
+                    </td>
+                    <td>
+                        <button class="btn-danger" onclick="deleteJob('${job.id}')">Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Update stats
+        function updateStats() {
+            document.getElementById('totalCount').textContent = jobs.length;
+            document.getElementById('pendingCount').textContent = jobs.filter(j => j.status === 'To Apply').length;
+            document.getElementById('appliedCount').textContent = jobs.filter(j => j.status === 'Applied').length;
+            document.getElementById('interviewCount').textContent = jobs.filter(j => j.status === 'Interviewing').length;
+        }
+
+        // Shorten URL for display
+        function shortenUrl(url) {
+            try {
+                const parsed = new URL(url);
+                return parsed.hostname.replace('www.', '');
+            } catch {
+                return url.substring(0, 30) + '...';
+            }
+        }
+
+        // Export data
+        function exportData() {
+            const dataStr = JSON.stringify(jobs, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `internship-tracker-${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showSuccess('Data exported!');
+        }
+
+        // Import data
+        function importData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const imported = JSON.parse(e.target.result);
+                    if (Array.isArray(imported)) {
+                        if (confirm(`Import ${imported.length} jobs? This will add to your existing data.`)) {
+                            // Add imported jobs, avoiding duplicates by URL
+                            let added = 0;
+                            imported.forEach(job => {
+                                if (!job.id) job.id = generateId();
+                                if (!jobs.some(j => j.url && j.url === job.url)) {
+                                    jobs.push(job);
+                                    added++;
+                                }
+                            });
+                            saveJobs();
+                            renderTable();
+                            updateStats();
+                            showSuccess(`Imported ${added} new jobs!`);
+                        }
+                    } else {
+                        showError('Invalid file format');
+                    }
+                } catch (err) {
+                    showError('Failed to parse file');
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = '';
+        }
+
+        // Show error
+        function showError(msg) {
+            const el = document.getElementById('errorMsg');
+            el.textContent = msg;
+            el.style.display = 'block';
+            setTimeout(() => el.style.display = 'none', 5000);
+        }
+
+        // Show success
+        function showSuccess(msg) {
+            const el = document.getElementById('successMsg');
+            el.textContent = msg;
+            el.style.display = 'block';
+            setTimeout(() => el.style.display = 'none', 3000);
+        }
+    </script>
+</body>
+</html>
